@@ -4,6 +4,7 @@ import Abstraction.AbstractMatrixGraph;
 import GraphAlgorithms.GraphTools;
 import Nodes.AbstractNode;
 import Nodes.DirectedNode;
+import Nodes.UndirectedNode;
 import Abstraction.IDirectedGraph;
 
 import java.util.ArrayList;
@@ -76,8 +77,11 @@ public class AdjacencyMatrixDirectedGraph extends AbstractMatrixGraph<DirectedNo
 	
 	@Override
 	public boolean isArc(AbstractNode from, AbstractNode to) {
-		// A completer
-		return true;
+		return this.matrix[from.getLabel()][to.getLabel()] > 0;
+	}
+	
+	public int getNumberOfArcs(AbstractNode from, AbstractNode to) {
+		return this.matrix[from.getLabel()][to.getLabel()];
 	}
 
 	/**
@@ -85,7 +89,9 @@ public class AdjacencyMatrixDirectedGraph extends AbstractMatrixGraph<DirectedNo
 	 */
 	@Override
 	public void removeArc(AbstractNode from, AbstractNode to) {
-		// A completer
+		if (isArc(from, to)) {
+			this.matrix[from.getLabel()][to.getLabel()]--;
+		}
 	}
 
 	/**
@@ -93,7 +99,7 @@ public class AdjacencyMatrixDirectedGraph extends AbstractMatrixGraph<DirectedNo
 	 */
 	@Override
 	public void addArc(AbstractNode from, AbstractNode to) {
-		// A completer
+		this.matrix[from.getLabel()][to.getLabel()]++;
 	}
 
 
@@ -106,8 +112,15 @@ public class AdjacencyMatrixDirectedGraph extends AbstractMatrixGraph<DirectedNo
 
 	@Override
 	public IDirectedGraph<DirectedNode> computeInverse() {
-		// A completer
-		return null;
+		AdjacencyMatrixDirectedGraph ma = new AdjacencyMatrixDirectedGraph(this.matrix);
+		for(int i = 1; i<this.order; i++){
+			for(int j = i+1; j<this.order; j++){
+				int tmp = ma.matrix[i][j];
+				ma.matrix[i][j] = ma.matrix[j][i];
+				ma.matrix[j][i] = tmp;
+			}
+		}
+		return ma;
 	}
 
 	@Override
@@ -136,6 +149,18 @@ public class AdjacencyMatrixDirectedGraph extends AbstractMatrixGraph<DirectedNo
 		for (Integer integer : t2) {
 			System.out.print(integer + ", ");
 		}
-		// A completer
+		System.out.println("\n************\nTests\n");
+		System.out.println("isArc() (expected : false) - result : " + am.isArc(new UndirectedNode(0), new UndirectedNode(1)));
+		System.out.println("isArc() (expected : true) - result : " + am.isArc(new UndirectedNode(0), new UndirectedNode(3)));
+		
+		System.out.println("Number of edges on [3][2] : " + am.getNumberOfArcs(new UndirectedNode(3), new UndirectedNode(2)));
+		am.addArc(new UndirectedNode(3), new UndirectedNode(2));
+		am.addArc(new UndirectedNode(3), new UndirectedNode(2));
+		System.out.println("Number of edges on [3][2] (expected : 3) - result : " + am.getNumberOfArcs(new UndirectedNode(3), new UndirectedNode(2)));
+		am.removeArc(new UndirectedNode(3), new UndirectedNode(2));
+		System.out.println("Number of edges on [3][2] (expected : 2) - result : " + am.getNumberOfArcs(new UndirectedNode(3), new UndirectedNode(2)));
+		
+		System.out.println(am.toString());
+		System.out.println("After inversion :\n\n" + am.computeInverse());
 	}
 }
