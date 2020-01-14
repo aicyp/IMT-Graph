@@ -161,6 +161,6 @@ public class AdjacencyMatrixDirectedGraph extends AbstractMatrixGraph<DirectedNo
 		System.out.println("Number of edges on [3][2] (expected : 2) - result : " + am.getNumberOfArcs(new UndirectedNode(3), new UndirectedNode(2)));
 		
 		System.out.println(am.toString());
-		System.out.println("After inversion :\n\n" + am.computeInverse());
+		System.out.println("After inversion :" + am.computeInverse());
 	}
 }
