@@ -73,21 +73,28 @@ public class UndirectedGraph<A extends UndirectedNode> extends AbstractListGraph
 
     @Override
     public boolean isEdge(A x, A y) {    
-        // A completer
-    	return true;
+        return this.getNodeOfList(x).getNeighbours().containsKey(this.getNodeOfList(y));
     }
 
     @Override
     public void removeEdge(A x, A y) {
     	if(isEdge(x,y)){
-    		// A completer
+    		this.getNodeOfList(x).getNeighbours().remove(this.getNodeOfList(y));
+    		this.getNodeOfList(x).setNeighbours(this.getNodeOfList(x).getNeighbours());
+    		
+    		this.getNodeOfList(y).getNeighbours().remove(this.getNodeOfList(x));
+    		this.getNodeOfList(y).setNeighbours(this.getNodeOfList(y).getNeighbours());
     	}
     }
 
     @Override
     public void addEdge(A x, A y) {
     	if(!isEdge(x,y)){
-    		// A completer
+    		this.getNodeOfList(x).getNeighbours().put(this.getNodeOfList(y), null);
+    		this.getNodeOfList(x).setNeighbours(this.getNodeOfList(x).getNeighbours());
+    		
+    		this.getNodeOfList(y).getNeighbours().put(this.getNodeOfList(x), null);
+    		this.getNodeOfList(y).setNeighbours(this.getNodeOfList(y).getNeighbours());
     	}
     }
 
@@ -118,7 +125,11 @@ public class UndirectedGraph<A extends UndirectedNode> extends AbstractListGraph
     @Override
     public int[][] toAdjacencyMatrix() {
         int[][] matrix = new int[order][order];
-        // A completer
+        for (UndirectedNode n : nodes) {
+            for (UndirectedNode sn : n.getNeighbours().keySet()) {
+            	matrix[n.getLabel()][sn.getLabel()]++;
+            }
+        }
         return matrix;
     }
 
@@ -142,6 +153,17 @@ public class UndirectedGraph<A extends UndirectedNode> extends AbstractListGraph
         UndirectedGraph al = new UndirectedGraph(mat);
         System.out.println(al);
         // A completer
+        System.out.println("\n************\nTests\n");
+        System.out.println("isEdge() (expected : false) - result : " + al.isEdge(new UndirectedNode(0), new UndirectedNode(2)));
+        System.out.println("isEdge() [0][3] (expected : true) - result : " + al.isEdge(new UndirectedNode(0), new UndirectedNode(3)));
+        
+        al.removeEdge(new UndirectedNode(0), new UndirectedNode(3));
+        System.out.println("isEdge() after removed [0][3] (expected : false) - result : " + al.isEdge(new UndirectedNode(0), new UndirectedNode(3)));
+        
+        al.addEdge(new UndirectedNode(0), new UndirectedNode(3));
+        System.out.println("isEdge() after added [0][3] (expected : true) - result : " + al.isEdge(new UndirectedNode(0), new UndirectedNode(3)));
+        
+        GraphTools.afficherMatrix(al.toAdjacencyMatrix());
     }
 
 }
