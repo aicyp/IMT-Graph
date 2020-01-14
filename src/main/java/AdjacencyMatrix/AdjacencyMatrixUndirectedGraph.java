@@ -67,8 +67,11 @@ public class AdjacencyMatrixUndirectedGraph extends AbstractMatrixGraph<Undirect
 	
 	@Override
 	public boolean isEdge(AbstractNode x, AbstractNode y) {
-		// A completer
-		return true;		
+		return matrix[x.getLabel()][y.getLabel()] > 0;		
+	}
+	
+	public int getNumberOfEdges(AbstractNode x, AbstractNode y) {
+		return matrix[x.getLabel()][y.getLabel()];		
 	}
 	
 	/**
@@ -76,7 +79,12 @@ public class AdjacencyMatrixUndirectedGraph extends AbstractMatrixGraph<Undirect
      */
 	@Override
 	public void removeEdge(AbstractNode x, AbstractNode y) {
-		// A completer
+		if (isEdge(x, y)) {
+			matrix[x.getLabel()][y.getLabel()]--;
+			if (x.getLabel() != y.getLabel()) {
+				matrix[y.getLabel()][x.getLabel()]--;
+			}
+		}
 	}
 
 	/**
@@ -84,7 +92,10 @@ public class AdjacencyMatrixUndirectedGraph extends AbstractMatrixGraph<Undirect
      */
 	@Override
 	public void addEdge(AbstractNode x, AbstractNode y) {
-		// A completer
+		matrix[x.getLabel()][y.getLabel()]++;
+		if (x.getLabel() != y.getLabel()) {
+			matrix[y.getLabel()][x.getLabel()]++;
+		}
 	}
 
 	
@@ -118,6 +129,15 @@ public class AdjacencyMatrixUndirectedGraph extends AbstractMatrixGraph<Undirect
 		for (Integer integer : t2) {
 			System.out.print(integer + ", ");
 		}
-		// A completer
+		System.out.println("\n************\nTests\n");
+		System.out.println("isEdge() (expected : false) - result : " + am.isEdge(new UndirectedNode(0), new UndirectedNode(0)));
+		System.out.println("isEdge() (expected : true) - result : " + am.isEdge(new UndirectedNode(2), new UndirectedNode(5)));
+		
+		System.out.println("Number of edges on [3][2] : " + am.getNumberOfEdges(new UndirectedNode(3), new UndirectedNode(2)));
+		am.addEdge(new UndirectedNode(3), new UndirectedNode(2));
+		am.addEdge(new UndirectedNode(3), new UndirectedNode(2));
+		System.out.println("Number of edges on [3][2] (expected : 3) - result : " + am.getNumberOfEdges(new UndirectedNode(3), new UndirectedNode(2)));
+		am.removeEdge(new UndirectedNode(3), new UndirectedNode(2));
+		System.out.println("Number of edges on [3][2] (expected : 2) - result : " + am.getNumberOfEdges(new UndirectedNode(3), new UndirectedNode(2)));
 	}
 }
