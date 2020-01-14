@@ -152,7 +152,7 @@ public class UndirectedGraph<A extends UndirectedNode> extends AbstractListGraph
         GraphTools.afficherMatrix(mat);
         UndirectedGraph al = new UndirectedGraph(mat);
         System.out.println(al);
-        // A completer
+
         System.out.println("\n************\nTests\n");
         System.out.println("isEdge() (expected : false) - result : " + al.isEdge(new UndirectedNode(0), new UndirectedNode(2)));
         System.out.println("isEdge() [0][3] (expected : true) - result : " + al.isEdge(new UndirectedNode(0), new UndirectedNode(3)));
