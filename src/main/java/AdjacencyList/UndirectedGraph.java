@@ -10,160 +10,165 @@ import Abstraction.IUndirectedGraph;
 
 public class UndirectedGraph<A extends UndirectedNode> extends AbstractListGraph<A> implements IUndirectedGraph<A> {
 
-    //--------------------------------------------------
-    // 				Constructors
-    //--------------------------------------------------
+	// --------------------------------------------------
+	// Constructors
+	// --------------------------------------------------
 
 	public UndirectedGraph() {
-		 this.nodes = new ArrayList<>();
+		this.nodes = new ArrayList<>();
 	}
-	
+
 	public UndirectedGraph(List<A> nodes) {
-        super(nodes);
-        for (UndirectedNode i : nodes) {
-            this.m += i.getNbNeigh();
-        }
-    }
+		super(nodes);
+		for (UndirectedNode i : nodes) {
+			this.m += i.getNbNeigh();
+		}
+	}
 
-    public UndirectedGraph(int[][] matrix) {
-        this.order = matrix.length;
-        this.nodes = new ArrayList<>();
-        for (int i = 0; i < this.order; i++) {
-            this.nodes.add(this.makeNode(i));
-        }
-        for (A n : this.getNodes()) {
-            for (int j = n.getLabel(); j < matrix[n.getLabel()].length; j++) {
-                A nn = this.getNodes().get(j);
-                if (matrix[n.getLabel()][j] != 0) {
-                    n.getNeighbours().put(nn,0);
-                    nn.getNeighbours().put(n,0);
-                    this.m++;
-                }
-            }
-        }
-    }
+	public UndirectedGraph(int[][] matrix) {
+		this.order = matrix.length;
+		this.nodes = new ArrayList<>();
+		for (int i = 0; i < this.order; i++) {
+			this.nodes.add(this.makeNode(i));
+		}
+		for (A n : this.getNodes()) {
+			for (int j = n.getLabel(); j < matrix[n.getLabel()].length; j++) {
+				A nn = this.getNodes().get(j);
+				if (matrix[n.getLabel()][j] != 0) {
+					n.getNeighbours().put(nn, 0);
+					nn.getNeighbours().put(n, 0);
+					this.m++;
+				}
+			}
+		}
+	}
 
-    public UndirectedGraph(UndirectedGraph<A> g) {
-        super();
-        this.order = g.getNbNodes();
-        this.m = g.getNbEdges();
-        this.nodes = new ArrayList<>();
-        for (A n : g.getNodes()) {
-            this.nodes.add(makeNode(n.getLabel()));
-        }
-        for (A n : g.getNodes()) {
-            A nn = this.getNodes().get(n.getLabel());
-            for (UndirectedNode sn : n.getNeighbours().keySet()) {
-                A snn = this.getNodes().get(sn.getLabel());
-                nn.getNeighbours().put(snn,0);
-                snn.getNeighbours().put(nn,0);
-            }
-        }
+	public UndirectedGraph(UndirectedGraph<A> g) {
+		super();
+		this.order = g.getNbNodes();
+		this.m = g.getNbEdges();
+		this.nodes = new ArrayList<>();
+		for (A n : g.getNodes()) {
+			this.nodes.add(makeNode(n.getLabel()));
+		}
+		for (A n : g.getNodes()) {
+			A nn = this.getNodes().get(n.getLabel());
+			for (UndirectedNode sn : n.getNeighbours().keySet()) {
+				A snn = this.getNodes().get(sn.getLabel());
+				nn.getNeighbours().put(snn, 0);
+				snn.getNeighbours().put(nn, 0);
+			}
+		}
 
-    }
+	}
 
-    // ------------------------------------------
-    // 				Accessors
-    // ------------------------------------------
+	// ------------------------------------------
+	// Accessors
+	// ------------------------------------------
 
-    @Override
-    public int getNbEdges() {
-        return this.m;
-    }
+	@Override
+	public int getNbEdges() {
+		return this.m;
+	}
 
-    @Override
-    public boolean isEdge(A x, A y) {    
-        return this.getNodeOfList(x).getNeighbours().containsKey(this.getNodeOfList(y));
-    }
+	@Override
+	public boolean isEdge(A x, A y) {
+		return this.getNodeOfList(x).getNeighbours().containsKey(this.getNodeOfList(y));
+	}
 
-    @Override
-    public void removeEdge(A x, A y) {
-    	if(isEdge(x,y)){
-    		this.getNodeOfList(x).getNeighbours().remove(this.getNodeOfList(y));
-    		this.getNodeOfList(x).setNeighbours(this.getNodeOfList(x).getNeighbours());
-    		
-    		this.getNodeOfList(y).getNeighbours().remove(this.getNodeOfList(x));
-    		this.getNodeOfList(y).setNeighbours(this.getNodeOfList(y).getNeighbours());
-    	}
-    }
+	@Override
+	public void removeEdge(A x, A y) {
+		if (isEdge(x, y)) {
+			this.getNodeOfList(x).getNeighbours().remove(this.getNodeOfList(y));
+			this.getNodeOfList(x).setNeighbours(this.getNodeOfList(x).getNeighbours());
 
-    @Override
-    public void addEdge(A x, A y) {
-    	if(!isEdge(x,y)){
-    		this.getNodeOfList(x).getNeighbours().put(this.getNodeOfList(y), null);
-    		this.getNodeOfList(x).setNeighbours(this.getNodeOfList(x).getNeighbours());
-    		
-    		this.getNodeOfList(y).getNeighbours().put(this.getNodeOfList(x), null);
-    		this.getNodeOfList(y).setNeighbours(this.getNodeOfList(y).getNeighbours());
-    	}
-    }
+			this.getNodeOfList(y).getNeighbours().remove(this.getNodeOfList(x));
+			this.getNodeOfList(y).setNeighbours(this.getNodeOfList(y).getNeighbours());
+		}
+	}
 
-    //--------------------------------------------------
-    // 					Methods
-    //--------------------------------------------------
-    
-    /**
-     * Method to generify node creation
-     * @param label of a node
-     * @return a node typed by A extends UndirectedNode
-     */
-    @Override
-    public A makeNode(int label) {
-        return (A) new UndirectedNode(label);
-    }
+	@Override
+	public void addEdge(A x, A y) {
+		if (!isEdge(x, y)) {
+			this.getNodeOfList(x).getNeighbours().put(this.getNodeOfList(y), null);
+			this.getNodeOfList(x).setNeighbours(this.getNodeOfList(x).getNeighbours());
 
-    /**
-     * @return the corresponding nodes in the list this.nodes
-     */
-    public A getNodeOfList(A src) {
-        return this.getNodes().get(src.getLabel());
-    }
-    
-    /**
-     * @return the adjacency matrix representation int[][] of the graph
-     */
-    @Override
-    public int[][] toAdjacencyMatrix() {
-        int[][] matrix = new int[order][order];
-        for (UndirectedNode n : nodes) {
-            for (UndirectedNode sn : n.getNeighbours().keySet()) {
-            	matrix[n.getLabel()][sn.getLabel()]++;
-            }
-        }
-        return matrix;
-    }
+			this.getNodeOfList(y).getNeighbours().put(this.getNodeOfList(x), null);
+			this.getNodeOfList(y).setNeighbours(this.getNodeOfList(y).getNeighbours());
+		}
+	}
 
-    @Override
-    public String toString() {
-        StringBuilder s = new StringBuilder();
-        for (UndirectedNode n : nodes) {
-            s.append("neighbours of ").append(n).append(" : ");
-            for (UndirectedNode sn : n.getNeighbours().keySet()) {
-                s.append(sn).append(" ");
-            }
-            s.append("\n");
-        }
-        s.append("\n");
-        return s.toString();
-    }
+	// --------------------------------------------------
+	// Methods
+	// --------------------------------------------------
 
-    public static void main(String[] args) {
-        int[][] mat = GraphTools.generateGraphData(10, 20, false, true, false, 100001);
-        GraphTools.afficherMatrix(mat);
-        UndirectedGraph al = new UndirectedGraph(mat);
-        System.out.println(al);
+	/**
+	 * Method to generify node creation
+	 * 
+	 * @param label of a node
+	 * @return a node typed by A extends UndirectedNode
+	 */
+	@Override
+	public A makeNode(int label) {
+		return (A) new UndirectedNode(label);
+	}
 
-        System.out.println("\n************\nTests\n");
-        System.out.println("isEdge() (expected : false) - result : " + al.isEdge(new UndirectedNode(0), new UndirectedNode(2)));
-        System.out.println("isEdge() [0][3] (expected : true) - result : " + al.isEdge(new UndirectedNode(0), new UndirectedNode(3)));
-        
-        al.removeEdge(new UndirectedNode(0), new UndirectedNode(3));
-        System.out.println("isEdge() after removed [0][3] (expected : false) - result : " + al.isEdge(new UndirectedNode(0), new UndirectedNode(3)));
-        
-        al.addEdge(new UndirectedNode(0), new UndirectedNode(3));
-        System.out.println("isEdge() after added [0][3] (expected : true) - result : " + al.isEdge(new UndirectedNode(0), new UndirectedNode(3)));
-        
-        GraphTools.afficherMatrix(al.toAdjacencyMatrix());
-    }
+	/**
+	 * @return the corresponding nodes in the list this.nodes
+	 */
+	public A getNodeOfList(A src) {
+		return this.getNodes().get(src.getLabel());
+	}
+
+	/**
+	 * @return the adjacency matrix representation int[][] of the graph
+	 */
+	@Override
+	public int[][] toAdjacencyMatrix() {
+		int[][] matrix = new int[order][order];
+		for (UndirectedNode n : nodes) {
+			for (UndirectedNode sn : n.getNeighbours().keySet()) {
+				matrix[n.getLabel()][sn.getLabel()]++;
+			}
+		}
+		return matrix;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder s = new StringBuilder();
+		for (UndirectedNode n : nodes) {
+			s.append("neighbours of ").append(n).append(" : ");
+			for (UndirectedNode sn : n.getNeighbours().keySet()) {
+				s.append(sn).append(" ");
+			}
+			s.append("\n");
+		}
+		s.append("\n");
+		return s.toString();
+	}
+
+	public static void main(String[] args) {
+		int[][] mat = GraphTools.generateGraphData(10, 20, false, true, false, 100001);
+		GraphTools.afficherMatrix(mat);
+		UndirectedGraph al = new UndirectedGraph(mat);
+		System.out.println(al);
+
+		System.out.println("\n************\nTests\n");
+		System.out.println(
+				"isEdge() (expected : false) - result : " + al.isEdge(new UndirectedNode(0), new UndirectedNode(2)));
+		System.out.println("isEdge() [0][3] (expected : true) - result : "
+				+ al.isEdge(new UndirectedNode(0), new UndirectedNode(3)));
+
+		al.removeEdge(new UndirectedNode(0), new UndirectedNode(3));
+		System.out.println("isEdge() after removed [0][3] (expected : false) - result : "
+				+ al.isEdge(new UndirectedNode(0), new UndirectedNode(3)));
+
+		al.addEdge(new UndirectedNode(0), new UndirectedNode(3));
+		System.out.println("isEdge() after added [0][3] (expected : true) - result : "
+				+ al.isEdge(new UndirectedNode(0), new UndirectedNode(3)));
+
+		GraphTools.afficherMatrix(al.toAdjacencyMatrix());
+	}
 
 }

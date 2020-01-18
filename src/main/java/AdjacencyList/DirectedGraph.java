@@ -6,6 +6,7 @@ import java.util.Map;
 import Abstraction.AbstractListGraph;
 import GraphAlgorithms.GraphTools;
 import Nodes.DirectedNode;
+import Nodes.UndirectedNode;
 import Abstraction.IDirectedGraph;
 
 public class DirectedGraph<A extends DirectedNode> extends AbstractListGraph<A> implements IDirectedGraph<A> {
@@ -69,18 +70,17 @@ public class DirectedGraph<A extends DirectedNode> extends AbstractListGraph<A> 
 
     @Override
     public boolean isArc(A from, A to) {
-    	// A completer
-    	return false;
+    	return this.getNodeOfList(from).getSuccs().containsKey(this.getNodeOfList(to));
     }
 
     @Override
     public void removeArc(A from, A to) {
-    	// A completer
+    	this.getNodeOfList(from).getSuccs().remove(this.getNodeOfList(to));
     }
 
     @Override
     public void addArc(A from, A to) {
-    	// A completer
+    	this.getNodeOfList(from).addSucc(to, 0);
     }
 
     //--------------------------------------------------
@@ -122,7 +122,15 @@ public class DirectedGraph<A extends DirectedNode> extends AbstractListGraph<A> 
     @Override
     public IDirectedGraph computeInverse() {
         DirectedGraph<A> g = new DirectedGraph<>(this);
-        // A completer
+        int[][] matrix = g.toAdjacencyMatrix();
+        for(int i = 1; i<this.order; i++){
+			for(int j = i+1; j<this.order; j++){
+				int tmp = matrix[i][j];
+				matrix[i][j] = matrix[j][i];
+				matrix[j][i] = tmp;
+			}
+		}
+        g = new DirectedGraph<>(matrix);
         return g;
     }
     
@@ -146,5 +154,20 @@ public class DirectedGraph<A extends DirectedNode> extends AbstractListGraph<A> 
         DirectedGraph al = new DirectedGraph(Matrix);
         System.out.println(al);
         // A completer
+        
+        System.out.println("\n************\nTests\n");
+		System.out.println("isArc() (expected : false) - result : " + al.isArc(new DirectedNode(0), new DirectedNode(1)));
+		System.out.println("isArc() [0][3] (expected : true) - result : " + al.isArc(new DirectedNode(0), new DirectedNode(3)));
+		
+		al.removeArc(new DirectedNode(0), new DirectedNode(3));
+		System.out.println("isArc() after removed [0][3] (expected : false) - result : "
+				+ al.isArc(new DirectedNode(0), new DirectedNode(3)));
+		
+		al.addArc(new DirectedNode(0), new DirectedNode(3));
+		System.out.println("isArc() after added [0][3] (expected : true) - result : "
+				+ al.isArc(new DirectedNode(0), new DirectedNode(3)));
+		
+		System.out.println(al.toString());
+		System.out.println("After inversion :\n" + al.computeInverse());
     }
 }
