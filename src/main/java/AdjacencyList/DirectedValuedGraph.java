@@ -39,7 +39,7 @@ public class DirectedValuedGraph extends DirectedGraph<DirectedNode> {
      * Adds the arc (from,to) with cost  if it is not already present in the graph
      */
     public void addArc(DirectedNode from, DirectedNode to, int cost) {
-    	// A completer      
+    	this.getNodeOfList(from).addSucc(to, cost);
     }
     
     @Override

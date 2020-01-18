@@ -2,6 +2,7 @@ package AdjacencyMatrix;
 
 import GraphAlgorithms.GraphTools;
 import Nodes.AbstractNode;
+import Nodes.DirectedNode;
 import Nodes.UndirectedNode;
 
 public class AdjacencyMatrixUndirectedValuedGraph extends AdjacencyMatrixUndirectedGraph {
@@ -56,7 +57,9 @@ public class AdjacencyMatrixUndirectedValuedGraph extends AdjacencyMatrixUndirec
 	@Override
 	public void removeEdge(AbstractNode x, AbstractNode y) {
 		super.removeEdge(x, y);
-		// A completer
+		if (!super.isEdge(x, y)) {
+			matrixCosts[x.getLabel()][y.getLabel()] = 0;
+		}
 	}
 
 	/**
@@ -64,7 +67,10 @@ public class AdjacencyMatrixUndirectedValuedGraph extends AdjacencyMatrixUndirec
      */
 	public void addEdge(AbstractNode x, AbstractNode y, int cost ) {
 		super.addEdge(x,y);
-		// A completer
+		if (this.matrixCosts[x.getLabel()][y.getLabel()] == 0) {
+			this.matrixCosts[x.getLabel()][y.getLabel()] = cost;
+			this.matrixCosts[y.getLabel()][x.getLabel()] = cost;
+		}
 	}
 	
 	public String toString() {
@@ -86,7 +92,22 @@ public class AdjacencyMatrixUndirectedValuedGraph extends AdjacencyMatrixUndirec
 		GraphTools.afficherMatrix(matrix);
 		AdjacencyMatrixUndirectedValuedGraph am = new AdjacencyMatrixUndirectedValuedGraph(matrix, matrixValued);
 		System.out.println(am);
-		// A completer
+		// A compléter
+		System.out.println("\n************\nTests\n");
+		System.out.println("isEdge() (expected : false) - result : " + am.isEdge(new UndirectedNode(0), new UndirectedNode(1)));
+		System.out.println("isEdge() [0][7] (expected : true) - result : " + am.isEdge(new UndirectedNode(0), new UndirectedNode(7)));
+		
+		am.removeEdge(new UndirectedNode(0), new UndirectedNode(7));
+		am.removeEdge(new UndirectedNode(0), new UndirectedNode(7));
+		am.removeEdge(new UndirectedNode(0), new UndirectedNode(7));
+		System.out.println("isEdge() after removed [0][7] (expected : false) - result : "
+				+ am.isEdge(new UndirectedNode(0), new UndirectedNode(7)));
+		System.out.println("Cost (expected : 0) - result : " + matrixValued[0][7]);
+		
+		am.addEdge(new UndirectedNode(0), new UndirectedNode(7), 26);
+		System.out.println("isArc() after added [0][7] (expected : true) - result : "
+				+ am.isEdge(new UndirectedNode(0), new UndirectedNode(7)));
+		System.out.println("Cost (expected : 26) - result : " + matrixValued[0][7]);
 	}
 
 }
