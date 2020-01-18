@@ -39,7 +39,9 @@ public class DirectedValuedGraph extends DirectedGraph<DirectedNode> {
      * Adds the arc (from,to) with cost  if it is not already present in the graph
      */
     public void addArc(DirectedNode from, DirectedNode to, int cost) {
-    	this.getNodeOfList(from).addSucc(to, cost);
+    	if (!this.getNodeOfList(from).getSuccs().containsKey(this.getNodeOfList(to))) {
+    		this.getNodeOfList(from).addSucc(to, cost);
+    	}
     }
     
     @Override
@@ -65,6 +67,15 @@ public class DirectedValuedGraph extends DirectedGraph<DirectedNode> {
         DirectedValuedGraph al = new DirectedValuedGraph(matrixValued);
         System.out.println(al);
         // A completer
+        System.out.println("\n************\nTests\n");
+		System.out.println("isArc() (expected : false) - result : " + al.isArc(new DirectedNode(0), new DirectedNode(1)));
+		System.out.println("isArc() [0][2] (expected : true) - result : " + al.isArc(new DirectedNode(0), new DirectedNode(2)));
+		
+		al.addArc(new DirectedNode(0), new DirectedNode(3));
+		System.out.println("isArc() after added [0][3] (expected : true) - result : "
+				+ al.isArc(new DirectedNode(0), new DirectedNode(3)));
+        
+        System.out.println(al);
     }
 	
 }
