@@ -59,6 +59,7 @@ public class AdjacencyMatrixUndirectedValuedGraph extends AdjacencyMatrixUndirec
 		super.removeEdge(x, y);
 		if (!super.isEdge(x, y)) {
 			matrixCosts[x.getLabel()][y.getLabel()] = 0;
+			matrixCosts[y.getLabel()][x.getLabel()] = 0;
 		}
 	}
 
