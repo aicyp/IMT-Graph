@@ -73,28 +73,23 @@ public class UndirectedGraph<A extends UndirectedNode> extends AbstractListGraph
 
 	@Override
 	public boolean isEdge(A x, A y) {
-		return this.getNodeOfList(x).getNeighbours().containsKey(this.getNodeOfList(y));
+		return this.getNodeOfList(x).getNeighbours().containsKey(this.getNodeOfList(y))
+				&& this.getNodeOfList(y).getNeighbours().containsKey(this.getNodeOfList(x));
 	}
 
 	@Override
 	public void removeEdge(A x, A y) {
 		if (isEdge(x, y)) {
 			this.getNodeOfList(x).getNeighbours().remove(this.getNodeOfList(y));
-			this.getNodeOfList(x).setNeighbours(this.getNodeOfList(x).getNeighbours());
-
 			this.getNodeOfList(y).getNeighbours().remove(this.getNodeOfList(x));
-			this.getNodeOfList(y).setNeighbours(this.getNodeOfList(y).getNeighbours());
 		}
 	}
 
 	@Override
 	public void addEdge(A x, A y) {
 		if (!isEdge(x, y)) {
-			this.getNodeOfList(x).getNeighbours().put(this.getNodeOfList(y), null);
-			this.getNodeOfList(x).setNeighbours(this.getNodeOfList(x).getNeighbours());
-
-			this.getNodeOfList(y).getNeighbours().put(this.getNodeOfList(x), null);
-			this.getNodeOfList(y).setNeighbours(this.getNodeOfList(y).getNeighbours());
+			this.getNodeOfList(x).addNeigh(this.getNodeOfList(y), this.getNodeOfList(y).getLabel());
+			this.getNodeOfList(y).addNeigh(this.getNodeOfList(x), this.getNodeOfList(x).getLabel());
 		}
 	}
 

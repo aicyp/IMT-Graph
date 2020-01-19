@@ -3,6 +3,7 @@ package AdjacencyList;
 import java.util.ArrayList;
 
 import GraphAlgorithms.GraphTools;
+import Nodes.DirectedNode;
 import Nodes.UndirectedNode;
 
 public class UndirectedValuedGraph extends UndirectedGraph<UndirectedNode> {
@@ -39,7 +40,11 @@ public class UndirectedValuedGraph extends UndirectedGraph<UndirectedNode> {
      * Adds the edge (from,to) with cost if it is not already present in the graph
      */
     public void addEdge(UndirectedNode x, UndirectedNode y, int cost) {
-    	// A completer
+    	if (!this.isEdge(x, y)) {
+    		this.getNodeOfList(x).addNeigh(this.getNodeOfList(y), cost);
+    		this.getNodeOfList(y).addNeigh(this.getNodeOfList(x), cost);
+    	}
+    	
     }
     
     @Override
@@ -63,6 +68,13 @@ public class UndirectedValuedGraph extends UndirectedGraph<UndirectedNode> {
         GraphTools.afficherMatrix(matrixValued);
         UndirectedValuedGraph al = new UndirectedValuedGraph(matrixValued);
         System.out.println(al);
-        // A completer
+        
+        System.out.println("\n************\nTests\n");
+		System.out.println("isEdge() [0][3] (expected : false) - result : " + al.isEdge(new UndirectedNode(0), new UndirectedNode(3)));
+		System.out.println("isEdge() [0][2] (expected : true) - result : " + al.isEdge(new UndirectedNode(0), new UndirectedNode(2)));
+		
+		al.addEdge(new UndirectedNode(0), new UndirectedNode(3), 36);
+		System.out.println("isEdge() after added [0][3] (expected : true) - result : "
+				+ al.isEdge(new UndirectedNode(0), new UndirectedNode(3)));
     }
 }

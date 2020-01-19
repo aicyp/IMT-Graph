@@ -70,19 +70,22 @@ public class DirectedGraph<A extends DirectedNode> extends AbstractListGraph<A> 
 
     @Override
     public boolean isArc(A from, A to) {
-    	return this.getNodeOfList(from).getSuccs().containsKey(this.getNodeOfList(to));
+    	return this.getNodeOfList(from).getSuccs().containsKey(this.getNodeOfList(to)) 
+    			&& this.getNodeOfList(to).getPreds().containsKey(this.getNodeOfList(from));
     }
 
     @Override
     public void removeArc(A from, A to) {
     	if (isArc(from, to)) {
     		this.getNodeOfList(from).getSuccs().remove(this.getNodeOfList(to));
+    		this.getNodeOfList(to).getPreds().remove(this.getNodeOfList(from));
     	}
     }
 
     @Override
     public void addArc(A from, A to) {
-    	this.getNodeOfList(from).addSucc(to, 0);
+    	this.getNodeOfList(from).addSucc(this.getNodeOfList(to), this.getNodeOfList(to).getLabel());
+    	this.getNodeOfList(to).addPred(this.getNodeOfList(from), this.getNodeOfList(to).getLabel());
     }
 
     //--------------------------------------------------
