@@ -7,10 +7,12 @@ import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+import Abstraction.AbstractListGraph;
 import AdjacencyList.DirectedGraph;
 import AdjacencyList.DirectedValuedGraph;
 import AdjacencyList.UndirectedValuedGraph;
 import Collection.Triple;
+import Nodes.AbstractNode;
 import Nodes.DirectedNode;
 import Nodes.UndirectedNode;
 
@@ -42,7 +44,33 @@ public class GraphToolsList  extends GraphTools {
 	// 				Methods
 	// ------------------------------------------
 
-	// A completer
+	// Calcule les sommets accessibles depuis s par une chaîne
+	private void explorerSommet(AbstractNode s, Set<AbstractNode> a) {
+		a.add(s);
+		if (s instanceof DirectedNode) {
+			for (DirectedNode t: ((DirectedNode) s).getSuccs().keySet()) {
+				if (!a.contains(t)) {
+					explorerSommet(t, a);
+				}
+			}
+		} else {
+			for (UndirectedNode t: ((UndirectedNode) s).getNeighbours().keySet()) {
+				if (!a.contains(t)) {
+					explorerSommet(t, a);
+				}
+			}
+		}
+	}
+	
+	// Calcule les composantes connexes du graphe
+	public void explorerGrapheProfondeur(AbstractListGraph<AbstractNode> graph) {
+		Set<AbstractNode> atteint = new HashSet<AbstractNode>();
+		for (AbstractNode s: graph.getNodes()) {
+			if (!atteint.contains(s)) {
+				this.explorerSommet(s, atteint);
+			}
+		}
+	}
 
 
 	public static void main(String[] args) {
