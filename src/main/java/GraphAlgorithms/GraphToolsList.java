@@ -1,8 +1,10 @@
 package GraphAlgorithms;
 
-import java.util.ArrayList;
+
 import java.util.HashSet;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -68,6 +70,38 @@ public class GraphToolsList  extends GraphTools {
 		for (AbstractNode s: graph.getNodes()) {
 			if (!atteint.contains(s)) {
 				this.explorerSommet(s, atteint);
+			}
+		}
+	}
+	
+	public void explorerGrapheLaregur(AbstractListGraph<AbstractNode> graph, AbstractNode s) {
+		boolean mark[] = new boolean[graph.getNbNodes()];
+		
+		for (AbstractNode v: graph.getNodes()) {
+			mark[v.getLabel()] = false;
+		}
+		mark[s.getLabel()] = true;
+		
+		Queue<AbstractNode> toVisit = new PriorityQueue<AbstractNode>();
+		toVisit.add(s);
+		
+		while (!toVisit.isEmpty()) {
+			AbstractNode v = toVisit.poll();
+			
+			if (s instanceof DirectedNode) {
+				for (DirectedNode w: ((DirectedNode) v).getSuccs().keySet()) {
+					if (!mark[w.getLabel()]) {
+						mark[w.getLabel()] = true;
+						toVisit.add(w);
+					}
+				}
+			} else {
+				for (UndirectedNode w: ((UndirectedNode) v).getNeighbours().keySet()) {
+					if (!mark[w.getLabel()]) {
+						mark[w.getLabel()] = true;
+						toVisit.add(w);
+					}
+				}				
 			}
 		}
 	}
