@@ -89,6 +89,16 @@ public class GraphToolsList  extends GraphTools {
 		return atteint;
 	}
 	
+	// Calcule les composantes connexes du graphe inverse
+	public Set<DirectedNode> explorerGrapheProfondeurInverse(DirectedGraph<DirectedNode> graphInverse, int[] fin) {
+		Set<DirectedNode> nodes = new HashSet<DirectedNode>();
+		for (int i = 0; i < fin.length; i++) {
+			nodes.add(new DirectedNode(fin[i], i));
+		}
+		
+		return null;
+	}
+	
 	// Calcule les composantes connexes du graphe
 	public List<AbstractNode> explorerGrapheLargeur(AbstractListGraph<AbstractNode> graph, AbstractNode s) {
 		List<AbstractNode> nodes = new ArrayList<AbstractNode>();
