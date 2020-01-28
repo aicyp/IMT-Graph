@@ -74,7 +74,8 @@ public class GraphToolsList  extends GraphTools {
 		}
 	}
 	
-	public void explorerGrapheLaregur(AbstractListGraph<AbstractNode> graph, AbstractNode s) {
+	// Calcule les composantes connexes du graphe
+	public void explorerGrapheLargeur(AbstractListGraph<AbstractNode> graph, AbstractNode s) {
 		boolean mark[] = new boolean[graph.getNbNodes()];
 		
 		for (AbstractNode v: graph.getNodes()) {
