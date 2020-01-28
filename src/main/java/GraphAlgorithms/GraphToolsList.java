@@ -1,6 +1,7 @@
 package GraphAlgorithms;
 
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -48,6 +49,10 @@ public class GraphToolsList  extends GraphTools {
 
 	// Calcule les sommets accessibles depuis s par une chaîne
 	private void explorerSommet(AbstractNode s, Set<AbstractNode> a) {
+		debut[s.getLabel()] = cpt;
+		visite[s.getLabel()] = 1;
+		cpt++;
+		
 		a.add(s);
 		if (s instanceof DirectedNode) {
 			for (DirectedNode t: ((DirectedNode) s).getSuccs().keySet()) {
@@ -62,10 +67,17 @@ public class GraphToolsList  extends GraphTools {
 				}
 			}
 		}
+		fin[s.getLabel()] = cpt;
+		visite[s.getLabel()] = 2;
 	}
 	
 	// Calcule les composantes connexes du graphe
 	public void explorerGrapheProfondeur(AbstractListGraph<AbstractNode> graph) {
+		debut = new int[graph.getNbNodes()];
+		visite = new int[graph.getNbNodes()];
+		fin = new int[graph.getNbNodes()];
+		cpt = 0;
+		
 		Set<AbstractNode> atteint = new HashSet<AbstractNode>();
 		for (AbstractNode s: graph.getNodes()) {
 			if (!atteint.contains(s)) {
@@ -75,15 +87,17 @@ public class GraphToolsList  extends GraphTools {
 	}
 	
 	// Calcule les composantes connexes du graphe
-	public void explorerGrapheLargeur(AbstractListGraph<AbstractNode> graph, AbstractNode s) {
+	public static List<AbstractNode> explorerGrapheLargeur(AbstractListGraph<AbstractNode> graph, AbstractNode s) {
+		List<AbstractNode> nodes = new ArrayList<AbstractNode>();
 		boolean mark[] = new boolean[graph.getNbNodes()];
+		Queue<AbstractNode> toVisit = new PriorityQueue<AbstractNode>();
 		
 		for (AbstractNode v: graph.getNodes()) {
 			mark[v.getLabel()] = false;
 		}
-		mark[s.getLabel()] = true;
 		
-		Queue<AbstractNode> toVisit = new PriorityQueue<AbstractNode>();
+		nodes.add(s);
+		mark[s.getLabel()] = true;
 		toVisit.add(s);
 		
 		while (!toVisit.isEmpty()) {
@@ -92,6 +106,7 @@ public class GraphToolsList  extends GraphTools {
 			if (s instanceof DirectedNode) {
 				for (DirectedNode w: ((DirectedNode) v).getSuccs().keySet()) {
 					if (!mark[w.getLabel()]) {
+						nodes.add(w);
 						mark[w.getLabel()] = true;
 						toVisit.add(w);
 					}
@@ -99,14 +114,16 @@ public class GraphToolsList  extends GraphTools {
 			} else {
 				for (UndirectedNode w: ((UndirectedNode) v).getNeighbours().keySet()) {
 					if (!mark[w.getLabel()]) {
+						nodes.add(w);
 						mark[w.getLabel()] = true;
 						toVisit.add(w);
 					}
 				}				
 			}
 		}
+		
+		return nodes;
 	}
-
 
 	public static void main(String[] args) {
 		int[][] Matrix = GraphTools.generateGraphData(10, 20, false, false, true, 100001);
