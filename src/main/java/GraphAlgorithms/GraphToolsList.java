@@ -11,6 +11,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 import Abstraction.AbstractListGraph;
+import Abstraction.IDirectedGraph;
 import AdjacencyList.DirectedGraph;
 import AdjacencyList.DirectedValuedGraph;
 import AdjacencyList.UndirectedValuedGraph;
@@ -72,7 +73,7 @@ public class GraphToolsList  extends GraphTools {
 	}
 	
 	// Calcule les composantes connexes du graphe
-	public void explorerGrapheProfondeur(AbstractListGraph<AbstractNode> graph) {
+	public Set<AbstractNode> explorerGrapheProfondeur(AbstractListGraph<AbstractNode> graph) {
 		debut = new int[graph.getNbNodes()];
 		visite = new int[graph.getNbNodes()];
 		fin = new int[graph.getNbNodes()];
@@ -84,10 +85,12 @@ public class GraphToolsList  extends GraphTools {
 				this.explorerSommet(s, atteint);
 			}
 		}
+		
+		return atteint;
 	}
 	
 	// Calcule les composantes connexes du graphe
-	public static List<AbstractNode> explorerGrapheLargeur(AbstractListGraph<AbstractNode> graph, AbstractNode s) {
+	public List<AbstractNode> explorerGrapheLargeur(AbstractListGraph<AbstractNode> graph, AbstractNode s) {
 		List<AbstractNode> nodes = new ArrayList<AbstractNode>();
 		boolean mark[] = new boolean[graph.getNbNodes()];
 		Queue<AbstractNode> toVisit = new PriorityQueue<AbstractNode>();
@@ -123,6 +126,17 @@ public class GraphToolsList  extends GraphTools {
 		}
 		
 		return nodes;
+	}
+	
+	// Calcule les composantes fortement connexes d'un graphe
+	public List<HashSet<Integer>> getCompFortementConnexes(AbstractListGraph<AbstractNode> graph) {
+		explorerGrapheProfondeur(graph);
+		int[] f = fin;
+		
+		AbstractListGraph<AbstractNode> inverse = (AbstractListGraph<AbstractNode>) ((IDirectedGraph<DirectedNode>) graph).computeInverse();
+		
+		explorerGrapheProfondeur(inverse);
+		return null;
 	}
 
 	public static void main(String[] args) {
