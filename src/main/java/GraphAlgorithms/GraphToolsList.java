@@ -2,11 +2,13 @@ package GraphAlgorithms;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -89,16 +91,6 @@ public class GraphToolsList  extends GraphTools {
 		return atteint;
 	}
 	
-	// Calcule les composantes connexes du graphe inverse
-	public Set<DirectedNode> explorerGrapheProfondeurInverse(DirectedGraph<DirectedNode> graphInverse, int[] fin) {
-		Set<DirectedNode> nodes = new HashSet<DirectedNode>();
-		for (int i = 0; i < fin.length; i++) {
-			nodes.add(new DirectedNode(fin[i], i));
-		}
-		
-		return null;
-	}
-	
 	// Calcule les composantes connexes du graphe
 	public List<AbstractNode> explorerGrapheLargeur(AbstractListGraph<AbstractNode> graph, AbstractNode s) {
 		List<AbstractNode> nodes = new ArrayList<AbstractNode>();
@@ -139,14 +131,21 @@ public class GraphToolsList  extends GraphTools {
 	}
 	
 	// Calcule les composantes fortement connexes d'un graphe
-	public List<HashSet<Integer>> getCompFortementConnexes(AbstractListGraph<AbstractNode> graph) {
-		explorerGrapheProfondeur(graph);
-		int[] f = fin;
-		
-		AbstractListGraph<AbstractNode> inverse = (AbstractListGraph<AbstractNode>) ((IDirectedGraph<DirectedNode>) graph).computeInverse();
-		
-		explorerGrapheProfondeur(inverse);
-		return null;
+	public void getCompFortementConnexes(AbstractListGraph<AbstractNode> graph) {
+		if (graph instanceof DirectedGraph) {
+			int[] nodes = new int[graph.getNbNodes()];
+			explorerGrapheProfondeur(graph, nodes);
+			int[] f1 = fin;
+			SortedMap<Integer, Integer> nodesEnd = new SortedMap<>();
+			for (int i = 0; i < f1.length; i++) {
+				nodesEnd.put(f1[i], i);
+			}
+			List<Integer> f1sorted = (List<Integer>) nodesEnd.values();
+			Collections.reverse(f1sorted);
+
+			DirectedGraph<DirectedNode> gInverse = (DirectedGraph<DirectedNode>) ((DirectedGraph) graph).computeInverse();
+			explorerGrapheProfondeur(gInverse, f1sorted.toArray());
+		}
 	}
 
 	public static void main(String[] args) {
