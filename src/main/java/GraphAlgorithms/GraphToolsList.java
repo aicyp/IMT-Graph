@@ -1,6 +1,7 @@
 package GraphAlgorithms;
 
 
+import java.io.ObjectInputStream.GetField;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -9,6 +10,7 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -51,7 +53,7 @@ public class GraphToolsList  extends GraphTools {
 	// ------------------------------------------
 
 	// Calcule les sommets accessibles depuis s par une chaîne
-	private void explorerSommet(AbstractNode s, Set<AbstractNode> a) {
+	private static void explorerSommet(AbstractNode s, List<AbstractNode> a) {
 		debut[s.getLabel()] = cpt;
 		visite[s.getLabel()] = 1;
 		cpt++;
@@ -75,24 +77,34 @@ public class GraphToolsList  extends GraphTools {
 	}
 	
 	// Calcule les composantes connexes du graphe
-	public Set<AbstractNode> explorerGrapheProfondeur(AbstractListGraph<AbstractNode> graph) {
+	public static List<AbstractNode> explorerGrapheProfondeur(AbstractListGraph<AbstractNode> graph, int[] nodes) {
 		debut = new int[graph.getNbNodes()];
 		visite = new int[graph.getNbNodes()];
 		fin = new int[graph.getNbNodes()];
 		cpt = 0;
 		
-		Set<AbstractNode> atteint = new HashSet<AbstractNode>();
-		for (AbstractNode s: graph.getNodes()) {
-			if (!atteint.contains(s)) {
-				this.explorerSommet(s, atteint);
+		List<AbstractNode> atteint = new ArrayList<AbstractNode>();
+		
+		if (graph.getNodes().get(0) instanceof DirectedNode) {
+			for (int s: nodes) {
+				if (visite[s] < 1) {
+					explorerSommet(graph.getNodes().get(s), atteint);
+				}
+			}
+		} else {
+			for (int s: nodes) {
+				if (visite[s] < 1) {
+					explorerSommet(graph.getNodes().get(s), atteint);
+				}
 			}
 		}
+		
 		
 		return atteint;
 	}
 	
 	// Calcule les composantes connexes du graphe
-	public List<AbstractNode> explorerGrapheLargeur(AbstractListGraph<AbstractNode> graph, AbstractNode s) {
+	public static List<AbstractNode> explorerGrapheLargeur(AbstractListGraph<AbstractNode> graph, AbstractNode s) {
 		List<AbstractNode> nodes = new ArrayList<AbstractNode>();
 		boolean mark[] = new boolean[graph.getNbNodes()];
 		Queue<AbstractNode> toVisit = new PriorityQueue<AbstractNode>();
@@ -131,21 +143,31 @@ public class GraphToolsList  extends GraphTools {
 	}
 	
 	// Calcule les composantes fortement connexes d'un graphe
-	public void getCompFortementConnexes(AbstractListGraph<AbstractNode> graph) {
-		if (graph instanceof DirectedGraph) {
-			int[] nodes = new int[graph.getNbNodes()];
-			explorerGrapheProfondeur(graph, nodes);
-			int[] f1 = fin;
-			SortedMap<Integer, Integer> nodesEnd = new SortedMap<>();
-			for (int i = 0; i < f1.length; i++) {
-				nodesEnd.put(f1[i], i);
-			}
-			List<Integer> f1sorted = (List<Integer>) nodesEnd.values();
-			Collections.reverse(f1sorted);
-
-			DirectedGraph<DirectedNode> gInverse = (DirectedGraph<DirectedNode>) ((DirectedGraph) graph).computeInverse();
-			explorerGrapheProfondeur(gInverse, f1sorted.toArray());
+	public static List<AbstractNode> getCompFortementConnexe(AbstractListGraph<AbstractNode> graph) {
+		assert graph instanceof DirectedGraph;
+		int[] nodes = new int[graph.getNbNodes()];
+	
+		for (AbstractNode s : graph.getNodes()) {
+			nodes[s.getLabel()] = s.getLabel();
 		}
+		explorerGrapheProfondeur(graph, nodes);
+		int[] f = fin;
+		
+		DirectedGraph<DirectedNode> graphInverse = (DirectedGraph<DirectedNode>) ((DirectedGraph) graph).computeInverse();
+		
+		SortedMap<Integer, Integer> fList = new TreeMap<>();
+		for (int i = 0; i < f.length; i++) {
+			fList.put(f[i], i);
+		}
+		List<Integer> fSorted = (List<Integer>) fList.values();
+		Collections.reverse(fSorted);
+
+		int[] nodesToVisit = new int[fSorted.size()];
+		for (int i = 0 ; i < fSorted.size() ; i++) {
+			nodesToVisit[i] = fSorted.get(i);
+		}		
+		
+		return explorerGrapheProfondeur((AbstractListGraph) graphInverse, nodesToVisit);
 	}
 
 	public static void main(String[] args) {
@@ -154,6 +176,8 @@ public class GraphToolsList  extends GraphTools {
 		DirectedGraph<DirectedNode> al = new DirectedGraph<>(Matrix);
 		System.out.println(al);
 
-		// A completer
+		long startTime;
+		
+		System.out.println(getCompFortementConnexe((AbstractListGraph) al));
 	}
 }
