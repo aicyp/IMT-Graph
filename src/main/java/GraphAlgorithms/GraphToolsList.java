@@ -3,6 +3,7 @@ package GraphAlgorithms;
 
 import java.io.ObjectInputStream.GetField;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -152,23 +153,34 @@ public class GraphToolsList  extends GraphTools {
 			nodes[s.getLabel()] = s.getLabel();
 		}
 		explorerGrapheProfondeur(graph, nodes);
-		int[] f = fin;
+		int[] f = fin.clone();
 		
 		DirectedGraph<DirectedNode> graphInverse = (DirectedGraph<DirectedNode>) ((DirectedGraph) graph).computeInverse();
 		
-		SortedMap<Integer, Integer> fList = new TreeMap<>();
+		Arrays.sort(f);
 		for (int i = 0; i < f.length; i++) {
-			fList.put(f[i], i);
+			for (int j = 0; j < fin.length; j++) {
+				if (f[i] == fin[j]) {
+					f[i] = j;
+					fin[j] = -1;
+				}
+			}
 		}
-		List<Integer> fSorted = new ArrayList<Integer>(fList.values());
-		Collections.reverse(fSorted);
-
-		int[] nodesToVisit = new int[fSorted.size()];
-		for (int i = 0 ; i < fSorted.size() ; i++) {
-			nodesToVisit[i] = fSorted.get(i);
-		}		
 		
-		return explorerGrapheProfondeur((AbstractListGraph) graphInverse, nodesToVisit);
+		List<Integer> fSorted = new ArrayList<>();
+		
+		for(int i = 0; i < f.length; i ++) {
+			fSorted.add(f[i]);
+		}
+		
+		Collections.reverse(fSorted);
+		
+		for(int i = 0; i < fSorted.size(); i ++) {
+			f[i] = fSorted.get(i);
+		}
+	
+		
+		return explorerGrapheProfondeur((AbstractListGraph) graphInverse, f);
 	}
 
 	public static void main(String[] args) {
