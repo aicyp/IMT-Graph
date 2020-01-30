@@ -159,7 +159,7 @@ public class GraphToolsList  extends GraphTools {
 		for (int i = 0; i < f.length; i++) {
 			fList.put(f[i], i);
 		}
-		List<Integer> fSorted = (List<Integer>) fList.values();
+		List<Integer> fSorted = new ArrayList<Integer>(fList.values());
 		Collections.reverse(fSorted);
 
 		int[] nodesToVisit = new int[fSorted.size()];
