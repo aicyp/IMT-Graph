@@ -5,6 +5,7 @@ import java.io.ObjectInputStream.GetField;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -107,7 +108,7 @@ public class GraphToolsList  extends GraphTools {
 	public static List<AbstractNode> explorerGrapheLargeur(AbstractListGraph<AbstractNode> graph, AbstractNode s) {
 		List<AbstractNode> nodes = new ArrayList<AbstractNode>();
 		boolean mark[] = new boolean[graph.getNbNodes()];
-		Queue<AbstractNode> toVisit = new PriorityQueue<AbstractNode>();
+		Queue<AbstractNode> toVisit = new LinkedList<AbstractNode>();
 		
 		for (AbstractNode v: graph.getNodes()) {
 			mark[v.getLabel()] = false;
@@ -125,7 +126,7 @@ public class GraphToolsList  extends GraphTools {
 					if (!mark[w.getLabel()]) {
 						nodes.add(w);
 						mark[w.getLabel()] = true;
-						toVisit.add(w);
+						toVisit.add((AbstractNode) w);
 					}
 				}
 			} else {
@@ -133,7 +134,7 @@ public class GraphToolsList  extends GraphTools {
 					if (!mark[w.getLabel()]) {
 						nodes.add(w);
 						mark[w.getLabel()] = true;
-						toVisit.add(w);
+						toVisit.add((AbstractNode) w);
 					}
 				}				
 			}
@@ -175,9 +176,27 @@ public class GraphToolsList  extends GraphTools {
 		GraphTools.afficherMatrix(Matrix);
 		DirectedGraph<DirectedNode> al = new DirectedGraph<>(Matrix);
 		System.out.println(al);
-
-		long startTime;
 		
+		int[] nodes = new int[al.getNbNodes()];
+		
+		for (AbstractNode s : al.getNodes()) {
+			nodes[s.getLabel()] = s.getLabel();
+		}
+		
+		
+		long startTimeProfondeur = System.nanoTime();
+		System.out.println("Exploration du graphe en profondeur :");
+		System.out.println(explorerGrapheProfondeur((AbstractListGraph) al, nodes));
+		long durationProfondeur = System.nanoTime() - startTimeProfondeur;
+		System.out.println("Durée d'exécution du parcours en profondeur : " + durationProfondeur + " ns\n");
+		
+		long startTimeLargeur = System.nanoTime();
+		System.out.println("Exploration du graphe en largeur :");
+		System.out.println(explorerGrapheLargeur((AbstractListGraph) al, al.getNodes().get(0)));
+		long durationLargeur = System.nanoTime() - startTimeLargeur;
+		System.out.println("Durée d'exécution du parcours en largeur : " + durationLargeur + " ns\n");
+		
+		System.out.println("Calcul des composantes fortement connexes :");
 		System.out.println(getCompFortementConnexe((AbstractListGraph) al));
 	}
 }
