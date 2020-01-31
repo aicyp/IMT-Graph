@@ -84,8 +84,10 @@ public class DirectedGraph<A extends DirectedNode> extends AbstractListGraph<A> 
 
     @Override
     public void addArc(A from, A to) {
-    	this.getNodeOfList(from).addSucc(this.getNodeOfList(to), this.getNodeOfList(to).getLabel());
-    	this.getNodeOfList(to).addPred(this.getNodeOfList(from), this.getNodeOfList(to).getLabel());
+    	if (!isArc(from, to)) {
+    		this.getNodeOfList(from).addSucc(this.getNodeOfList(to), this.getNodeOfList(to).getLabel());
+        	this.getNodeOfList(to).addPred(this.getNodeOfList(from), this.getNodeOfList(from).getLabel());
+    	}
     }
 
     //--------------------------------------------------
@@ -158,7 +160,7 @@ public class DirectedGraph<A extends DirectedNode> extends AbstractListGraph<A> 
         GraphTools.afficherMatrix(Matrix);
         DirectedGraph al = new DirectedGraph(Matrix);
         System.out.println(al);
-        // A compléter
+
         System.out.println("\n************\nTests\n");
 		System.out.println("isArc() (expected : false) - result : " + al.isArc(new DirectedNode(0), new DirectedNode(1)));
 		System.out.println("isArc() [0][3] (expected : true) - result : " + al.isArc(new DirectedNode(0), new DirectedNode(3)));

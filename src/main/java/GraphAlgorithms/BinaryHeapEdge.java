@@ -185,7 +185,6 @@ public class BinaryHeapEdge<A> {
 			jarjarBin.insert(new DirectedNode(k), new DirectedNode(k + 30), rand);
 			k--;
 		}
-		// A completer
 
 		jarjarBin.lovelyPrinting();
 		System.out.println(jarjarBin.test());

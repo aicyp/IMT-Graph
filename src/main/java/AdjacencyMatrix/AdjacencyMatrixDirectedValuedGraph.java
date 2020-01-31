@@ -85,7 +85,7 @@ public class AdjacencyMatrixDirectedValuedGraph extends AdjacencyMatrixDirectedG
         int[][] matrixValued = GraphTools.generateValuedGraphData(10, false, false, true, false, 100001);
 		AdjacencyMatrixDirectedValuedGraph am = new AdjacencyMatrixDirectedValuedGraph(matrix, matrixValued);
 		System.out.println(am);
-		// A compléter
+
 		System.out.println("\n************\nTests\n");
 		System.out.println("isArc() (expected : false) - result : " + am.isArc(new DirectedNode(0), new DirectedNode(1)));
 		System.out.println("isArc() [0][3] (expected : true) - result : " + am.isArc(new DirectedNode(0), new DirectedNode(3)));
@@ -93,12 +93,12 @@ public class AdjacencyMatrixDirectedValuedGraph extends AdjacencyMatrixDirectedG
 		am.removeArc(new DirectedNode(0), new DirectedNode(3));
 		System.out.println("isArc() after removed [0][3] (expected : false) - result : "
 				+ am.isArc(new DirectedNode(0), new DirectedNode(3)));
-		System.out.println("Cost (expected : 0) - result : " + matrixValued[0][3]);
+		System.out.println("Cost (expected : 0) - result : " + am.getMatrixCosts()[0][3]);
 		
 		am.addArc(new DirectedNode(0), new DirectedNode(3), 26);
 		System.out.println("isArc() after added [0][3] (expected : true) - result : "
 				+ am.isArc(new DirectedNode(0), new DirectedNode(3)));
-		System.out.println("Cost (expected : 26) - result : " + matrixValued[0][3]);
+		System.out.println("Cost (expected : 26) - result : " + am.getMatrixCosts()[0][3]);
 		
 	}
 }
