@@ -195,3 +195,14 @@ public class BinaryHeapEdge<A> {
 	}
 
 }
+
+/**
+ * Question 6 :
+ * 
+ * 	La structure de données de notre tas binaire implémenter dans BinaryHeapEdge nous permettrait de récupérer l'arête
+ * de poids le plus faible depuis un sommet s en utilisant la méthode remove() après avoir construit un BinaryHeapEdge
+ * composé des enfants de s. Il suffit ensuite de rajouter les nouveaux enfants possibles à notre BinaryHeapEdge et
+ * répéter le procédé jusqu'à avoir atteint l'ensemble des sommets, en faisant bien attention de vérifier que le noeud
+ * obtenu avec la méthode remove() n'a pas déjà été exploré.
+ * 
+ **/
