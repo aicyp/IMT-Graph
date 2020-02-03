@@ -128,17 +128,18 @@ public class DirectedGraph<A extends DirectedNode> extends AbstractListGraph<A> 
 
     @Override
     public IDirectedGraph computeInverse() {
-        DirectedGraph<A> g = new DirectedGraph<>(this);
-        int[][] matrix = g.toAdjacencyMatrix();
-        for(int i = 0; i<this.order; i++){
-        	for (DirectedNode j : nodes.get(i).getSuccs().keySet()) {
-            	if (isArc(getNodeOfList((A) new DirectedNode(i)), getNodeOfList((A) j))) {
-            		g.addArc(g.getNodeOfList((A) j), g.getNodeOfList((A) new DirectedNode(i)));
-            	}
-            }
+    	int[][] matrix = new int[order][order];
+
+		DirectedGraph<A> g = new DirectedGraph<>(matrix);
+
+		for (int i = 0; i < order; i++) {
+			for (DirectedNode j : nodes.get(i).getSuccs().keySet()) {
+				if (isArc(getNodeOfList((A) new DirectedNode(i)), getNodeOfList((A) j))) {
+					g.addArc(g.getNodeOfList((A) j), g.getNodeOfList((A) new DirectedNode(i)));
+				}
+			}
 		}
-        g = new DirectedGraph<>(matrix);
-        return g;
+		return g;
     }
     
     @Override

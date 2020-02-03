@@ -112,15 +112,13 @@ public class AdjacencyMatrixDirectedGraph extends AbstractMatrixGraph<DirectedNo
 
 	@Override
 	public IDirectedGraph<DirectedNode> computeInverse() {
-		int[][] ret = new int[order][order];
-		
-		for (int i = 0 ; i < order ; i++)  {
-			for (int j = 0 ; j < order ; i++)  {
-				ret[j][i] = matrix[i][j];
+		int[][] matrixRet = new int[this.order][this.order];
+		for (int i = 0; i < this.order; i++) {
+			for (int j = 0; j < this.order; j++) {
+				matrixRet[i][j] = this.matrix[j][i];
 			}
 		}
-		
-		return new AdjacencyMatrixDirectedGraph(ret);
+		return new AdjacencyMatrixDirectedGraph(matrixRet);
 	}
 
 	@Override
