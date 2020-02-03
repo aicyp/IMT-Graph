@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Abstraction.AbstractListGraph;
+import Abstraction.IUndirectedGraph;
 import GraphAlgorithms.GraphTools;
 import Nodes.UndirectedNode;
-import Abstraction.IUndirectedGraph;
 
 public class UndirectedGraph<A extends UndirectedNode> extends AbstractListGraph<A> implements IUndirectedGraph<A> {
 
@@ -164,6 +164,11 @@ public class UndirectedGraph<A extends UndirectedNode> extends AbstractListGraph
 				+ al.isEdge(new UndirectedNode(0), new UndirectedNode(3)));
 
 		GraphTools.afficherMatrix(al.toAdjacencyMatrix());
+	}
+
+	@Override
+	public int[][] toAdjacencyMatrixCosts() {
+		return this.toAdjacencyMatrix();
 	}
 
 }
