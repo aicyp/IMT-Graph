@@ -59,6 +59,37 @@ public class DirectedValuedGraph extends DirectedGraph<DirectedNode> {
         return s.toString();
     }
     
+    // Calcule le chemin le plus court à partir du sommet initial du graphe
+ 	public int[][] getCheminPlusCourtDjikstra() {
+ 		int[] v = new int[this.getNbNodes()];
+ 		int[] p = new int[this.getNbNodes()];
+ 		boolean[] b = new boolean[this.getNbNodes()];
+ 		
+ 		int x = 0;
+ 		
+ 		int min = Integer.MAX_VALUE;
+ 		
+ 		for (int i = 0; i < this.getNbNodes(); i++) {
+ 			if (!b[i] && v[i]<min) {
+ 				x = i;
+ 				min = v[i];
+ 				
+ 			}
+ 			if (min < Integer.MAX_VALUE) {
+ 				b[x] = true;
+ 				for (int j = 0; j < this.getNbNodes(); j++) {
+ 					if (!b[j] && v[x]+this.getNodeOfList(new DirectedNode(i)).getSuccs().get(new DirectedNode(j))<v[j]) {
+ 						v[j] = v[x]+this.getNodeOfList(new DirectedNode(i)).getSuccs().get(new DirectedNode(j));
+ 						p[j] = x;
+ 					}
+ 				}
+ 			}
+ 			System.out.println("sommet : " + i + " - atteint? : " + b[i] + " - valeur : " + v[i] + " - pred : " + p[i]);
+ 		}
+ 		
+ 		return null;
+ 	}
+    
     
     public static void main(String[] args) {
         int[][] matrix = GraphTools.generateGraphData(10, 20, false, false, false, 100001);
@@ -76,7 +107,7 @@ public class DirectedValuedGraph extends DirectedGraph<DirectedNode> {
 		System.out.println("isArc() after added [0][3] (expected : true) - result : "
 				+ al.isArc(new DirectedNode(0), new DirectedNode(3)));
         
-        System.out.println(al);
+        al.getCheminPlusCourtDjikstra();
     }
 	
 }

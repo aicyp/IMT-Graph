@@ -9,6 +9,7 @@ import java.util.Queue;
 
 import Abstraction.AbstractListGraph;
 import AdjacencyList.DirectedGraph;
+import AdjacencyList.DirectedValuedGraph;
 import Nodes.AbstractNode;
 import Nodes.DirectedNode;
 import Nodes.UndirectedNode;
@@ -168,6 +169,13 @@ public class GraphToolsList extends GraphTools {
 		GraphTools.afficherMatrix(Matrix);
 		DirectedGraph<DirectedNode> al = new DirectedGraph<>(Matrix);
 		System.out.println(al);
+		
+		int[][] matrixDeux = GraphTools.generateGraphData(10, 20, false, false, false, 100001);
+        int[][] matrixDeuxValued = GraphTools.generateValuedGraphData(10, false, false, true, false, 100001);
+        GraphTools.afficherMatrix(matrixDeux);
+        GraphTools.afficherMatrix(matrixDeuxValued);
+        DirectedValuedGraph avl = new DirectedValuedGraph(matrixDeuxValued);
+
 
 		int[] nodes = new int[al.getNbNodes()];
 
