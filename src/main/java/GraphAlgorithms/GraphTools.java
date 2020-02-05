@@ -6,6 +6,7 @@ import java.util.Random;
 
 import Abstraction.IGraph;
 import AdjacencyList.UndirectedValuedGraph;
+import AdjacencyMatrix.AdjacencyMatrixDirectedValuedGraph;
 
 public class GraphTools {
 
@@ -286,7 +287,13 @@ public class GraphTools {
 		GraphTools.afficherMatrix(matrixValued);
 		UndirectedValuedGraph al = new UndirectedValuedGraph(matrixValued);
 
+		System.out.println("\nDijkstra 1 :");
 		getCheminPlusCourtDjikstra(al, 0);
+
+		AdjacencyMatrixDirectedValuedGraph am = new AdjacencyMatrixDirectedValuedGraph(matrix, matrixValued);
+
+		System.out.println("\nDijkstra 2 :");
+		getCheminPlusCourtDjikstra(am, 0);
 
 	}
 
