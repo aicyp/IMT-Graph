@@ -7,12 +7,14 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.TreeMap;
 
 import Abstraction.AbstractListGraph;
 import AdjacencyList.DirectedGraph;
 import AdjacencyList.DirectedValuedGraph;
+import Collection.Pair;
 import Nodes.AbstractNode;
 import Nodes.DirectedNode;
 import Nodes.UndirectedNode;
@@ -168,21 +170,23 @@ public class GraphToolsList extends GraphTools {
 	}
 	
 	// Calcule le chemin le plus court à partir de l'algorithme de Bellman
-	public void getCheminPlusCourtBellman(DirectedValuedGraph graph, DirectedNode s) {
+	public static Pair<int[], List<DirectedNode>> getCheminPlusCourtBellman(DirectedValuedGraph graph, DirectedNode s) {
 		
 		// init
 		int n = graph.getNbNodes();
 		int[] values = new int[n];
+		List<DirectedNode> precedent = new ArrayList<>(n);
 		for (int i = 0; i < n; i++) {
 			values[i] = Integer.MAX_VALUE;
+			precedent.add(null);
 		}
 		values[s.getLabel()] = 0;
-		
-		List<DirectedNode> precedent = new ArrayList<>(n);
 		precedent.set(s.getLabel(), s);
+		
 		List<DirectedNode> d = explorerGrapheLargeur((AbstractListGraph) graph);
 		System.out.println(d.toString());
 		Map<Integer, List<DirectedNode>> dMap = new HashMap<Integer, List<DirectedNode>>();
+		
 		for (int i = 0; i < d.size(); i++) {
 			if (dMap.containsKey(d.get(i).getLabel())) {
 				dMap.get(d.get(i).getLabel()).add(graph.getNodes().get(i));
@@ -192,42 +196,31 @@ public class GraphToolsList extends GraphTools {
 				dMap.put(d.get(i).getLabel(), tmp);
 			}
 		}
-		
-		
-		
-		HashMap<AbstractNode, Integer> nodesMap = new HashMap<AbstractNode, Integer>();
-		for (int i = 1; i < graph.getNbNodes(); i++) {
-				nodesMap.put(new DirectedNode(i, i == 0 ? 0 : Integer.MAX_VALUE), i);
-		}
-		for (int x = 0; x < graph.getNbNodes(); x++) {
-			
-		}
-		
-		
-		// https://java2blog.com/bellman-ford-algorithm-java/
-		
-		
-		/*int[] v = new int[graph.getNbNodes()];
-		int[] p = new int[graph.getNbNodes()];
-		Map<DirectedNode, Integer> nodes = new TreeMap<DirectedNode, Integer>();
-		
-		int x = 0;
-		int min = Integer.MAX_VALUE;
-		
-		v[0] = 0;
-		for (int i = 0; i < graph.getNbNodes(); i++) {
-			AbstractNode s = graph.getNodes().get(i);
-			if (s instanceof DirectedNode) {
-				nodes = ((DirectedNode) s).getSuccs();
-				for (DirectedNode m : nodes.keySet()) {
-					p[]
+		for (int k = 0; k < n; k++) {
+			if (dMap.containsKey(k)) {
+				for (DirectedNode node : dMap.get(k)) {
+					for (Entry<DirectedNode, Integer> entry : node.getSuccs().entrySet()) {
+						if (entry.getValue() + values[node.getLabel()] < values[entry.getKey().getLabel()]) {
+							values[entry.getKey().getLabel()] = entry.getValue() + values[node.getLabel()];
+							precedent.set(entry.getKey().getLabel(), node);
+						}
+					}
 				}
 			}
-		}*/
+		}
 		
+		DirectedNode node = graph.getNodes().get((n + s.getLabel()) % n);
+		for (Entry<DirectedNode, Integer> entry : node.getSuccs().entrySet()) {
+			if (entry.getValue() + values[node.getLabel()] < values[entry.getKey().getLabel()]) {
+				System.out.println("/!\\ There is a negative cycle.");
+			}
+		}
+		
+		
+		return new Pair<int[], List<DirectedNode>>(values, precedent);
 	}
 	
-	public static Pair<int[], List<DirectedNode>> bellman(DirectedValuedGraph g, DirectedNode s) {
+	/*public static Pair<int[], List<DirectedNode>> bellman(DirectedValuedGraph g, DirectedNode s) {
 
 		int n = g.getNbNodes();
 		int[] values = new int[n];
@@ -273,7 +266,7 @@ public class GraphToolsList extends GraphTools {
 		}
 
 		return new Pair<int[], List<DirectedNode>>(values, precedent);
-	}
+	}*/
 
 	public static void main(String[] args) {
 		int[][] Matrix = GraphTools.generateGraphData(10, 20, false, false, true, 100001);
@@ -308,5 +301,14 @@ public class GraphToolsList extends GraphTools {
 
 		System.out.println("Calcul des composantes fortement connexes :");
 		System.out.println(getCompFortementConnexe((AbstractListGraph) al));
+		
+		System.out.println("Calcul chemin le plus court - bellman :");
+		DirectedValuedGraph dg = new DirectedValuedGraph(
+				GraphTools.generateValuedGraphData(15, false, false, true, false, 100001));
+
+		System.out.println(dg.toString());
+		Pair<int[], List<DirectedNode>> ret = getCheminPlusCourtBellman(dg, dg.getNodes().get(0));
+		System.out.println(Arrays.toString(ret.getLeft()));
+		System.out.println(ret.getRight());
 	}
 }
