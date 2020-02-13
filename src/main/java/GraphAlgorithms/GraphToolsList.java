@@ -3,9 +3,12 @@ package GraphAlgorithms;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
+import java.util.TreeMap;
 
 import Abstraction.AbstractListGraph;
 import AdjacencyList.DirectedGraph;
@@ -162,6 +165,114 @@ public class GraphToolsList extends GraphTools {
 		}
 
 		return explorerGrapheProfondeur((AbstractListGraph) graphInverse, f);
+	}
+	
+	// Calcule le chemin le plus court à partir de l'algorithme de Bellman
+	public void getCheminPlusCourtBellman(DirectedValuedGraph graph, DirectedNode s) {
+		
+		// init
+		int n = graph.getNbNodes();
+		int[] values = new int[n];
+		for (int i = 0; i < n; i++) {
+			values[i] = Integer.MAX_VALUE;
+		}
+		values[s.getLabel()] = 0;
+		
+		List<DirectedNode> precedent = new ArrayList<>(n);
+		precedent.set(s.getLabel(), s);
+		List<DirectedNode> d = explorerGrapheLargeur((AbstractListGraph) graph);
+		System.out.println(d.toString());
+		Map<Integer, List<DirectedNode>> dMap = new HashMap<Integer, List<DirectedNode>>();
+		for (int i = 0; i < d.size(); i++) {
+			if (dMap.containsKey(d.get(i).getLabel())) {
+				dMap.get(d.get(i).getLabel()).add(graph.getNodes().get(i));
+			} else {
+				List<DirectedNode> tmp = new ArrayList<DirectedNode>();
+				tmp.add(graph.getNodes().get(i));
+				dMap.put(d.get(i).getLabel(), tmp);
+			}
+		}
+		
+		
+		
+		HashMap<AbstractNode, Integer> nodesMap = new HashMap<AbstractNode, Integer>();
+		for (int i = 1; i < graph.getNbNodes(); i++) {
+				nodesMap.put(new DirectedNode(i, i == 0 ? 0 : Integer.MAX_VALUE), i);
+		}
+		for (int x = 0; x < graph.getNbNodes(); x++) {
+			
+		}
+		
+		
+		// https://java2blog.com/bellman-ford-algorithm-java/
+		
+		
+		/*int[] v = new int[graph.getNbNodes()];
+		int[] p = new int[graph.getNbNodes()];
+		Map<DirectedNode, Integer> nodes = new TreeMap<DirectedNode, Integer>();
+		
+		int x = 0;
+		int min = Integer.MAX_VALUE;
+		
+		v[0] = 0;
+		for (int i = 0; i < graph.getNbNodes(); i++) {
+			AbstractNode s = graph.getNodes().get(i);
+			if (s instanceof DirectedNode) {
+				nodes = ((DirectedNode) s).getSuccs();
+				for (DirectedNode m : nodes.keySet()) {
+					p[]
+				}
+			}
+		}*/
+		
+	}
+	
+	public static Pair<int[], List<DirectedNode>> bellman(DirectedValuedGraph g, DirectedNode s) {
+
+		int n = g.getNbNodes();
+		int[] values = new int[n];
+		List<DirectedNode> precedent = new ArrayList<>(n);
+
+		// Initialisation
+		for (int i = 0; i < n; i++) {
+			values[i] = 999999999;
+			precedent.add(null);
+		}
+		values[s.getLabel()] = 0;
+		precedent.set(s.getLabel(), s);
+		int[] distancesFromS = new GraphToolsList().explorerGrapheLargeur((AbstractListGraph) g, (AbstractNode) s);
+		System.out.println(Arrays.toString(distancesFromS));
+		Map<Integer, List<DirectedNode>> distMap = new HashMap<Integer, List<DirectedNode>>();
+
+		for (int i = 0; i < distancesFromS.length; i++) {
+			if (distMap.containsKey(distancesFromS[i])) {
+				distMap.get(distancesFromS[i]).add(g.getNodes().get(i));
+			} else {
+				List<DirectedNode> tmp = new ArrayList<DirectedNode>();
+				tmp.add(g.getNodes().get(i));
+				distMap.put(distancesFromS[i], tmp);
+			}
+		}
+		for (int k = 0; k < n; k++) {
+			if (distMap.containsKey(k))
+				for (DirectedNode node : distMap.get(k)) {
+					for (Entry<DirectedNode, Integer> entry : node.getSuccs().entrySet()) {
+						if (entry.getValue() + values[node.getLabel()] < values[entry.getKey().getLabel()]) {
+							values[entry.getKey().getLabel()] = entry.getValue() + values[node.getLabel()];
+							precedent.set(entry.getKey().getLabel(), node);
+						}
+					}
+				}
+		}
+
+		DirectedNode node = g.getNodes().get((n + s.getLabel()) % n);
+		for (Entry<DirectedNode, Integer> entry : node.getSuccs().entrySet()) {
+			if (entry.getValue() + values[node.getLabel()] < values[entry.getKey().getLabel()]) {
+				System.out.println("/!\\ There is a negative cycle.");
+			}
+		}
+
+		return new Pair<int[], List<DirectedNode>>(values, precedent);
 	}
 
 	public static void main(String[] args) {
