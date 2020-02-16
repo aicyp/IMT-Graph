@@ -219,54 +219,6 @@ public class GraphToolsList extends GraphTools {
 		
 		return new Pair<int[], List<DirectedNode>>(values, precedent);
 	}
-	
-	/*public static Pair<int[], List<DirectedNode>> bellman(DirectedValuedGraph g, DirectedNode s) {
-
-		int n = g.getNbNodes();
-		int[] values = new int[n];
-		List<DirectedNode> precedent = new ArrayList<>(n);
-
-		// Initialisation
-		for (int i = 0; i < n; i++) {
-			values[i] = 999999999;
-			precedent.add(null);
-		}
-		values[s.getLabel()] = 0;
-		precedent.set(s.getLabel(), s);
-		int[] distancesFromS = new GraphToolsList().explorerGrapheLargeur((AbstractListGraph) g, (AbstractNode) s);
-		System.out.println(Arrays.toString(distancesFromS));
-		Map<Integer, List<DirectedNode>> distMap = new HashMap<Integer, List<DirectedNode>>();
-
-		for (int i = 0; i < distancesFromS.length; i++) {
-			if (distMap.containsKey(distancesFromS[i])) {
-				distMap.get(distancesFromS[i]).add(g.getNodes().get(i));
-			} else {
-				List<DirectedNode> tmp = new ArrayList<DirectedNode>();
-				tmp.add(g.getNodes().get(i));
-				distMap.put(distancesFromS[i], tmp);
-			}
-		}
-		for (int k = 0; k < n; k++) {
-			if (distMap.containsKey(k))
-				for (DirectedNode node : distMap.get(k)) {
-					for (Entry<DirectedNode, Integer> entry : node.getSuccs().entrySet()) {
-						if (entry.getValue() + values[node.getLabel()] < values[entry.getKey().getLabel()]) {
-							values[entry.getKey().getLabel()] = entry.getValue() + values[node.getLabel()];
-							precedent.set(entry.getKey().getLabel(), node);
-						}
-					}
-				}
-		}
-
-		DirectedNode node = g.getNodes().get((n + s.getLabel()) % n);
-		for (Entry<DirectedNode, Integer> entry : node.getSuccs().entrySet()) {
-			if (entry.getValue() + values[node.getLabel()] < values[entry.getKey().getLabel()]) {
-				System.out.println("/!\\ There is a negative cycle.");
-			}
-		}
-
-		return new Pair<int[], List<DirectedNode>>(values, precedent);
-	}*/
 
 	public static void main(String[] args) {
 		int[][] Matrix = GraphTools.generateGraphData(10, 20, false, false, true, 100001);
@@ -303,11 +255,11 @@ public class GraphToolsList extends GraphTools {
 		System.out.println(getCompFortementConnexe((AbstractListGraph) al));
 		
 		System.out.println("Calcul chemin le plus court - bellman :");
-		DirectedValuedGraph dg = new DirectedValuedGraph(
+		DirectedValuedGraph dGraph = new DirectedValuedGraph(
 				GraphTools.generateValuedGraphData(15, false, false, true, false, 100001));
 
-		System.out.println(dg.toString());
-		Pair<int[], List<DirectedNode>> ret = getCheminPlusCourtBellman(dg, dg.getNodes().get(0));
+		System.out.println(dGraph.toString());
+		Pair<int[], List<DirectedNode>> ret = getCheminPlusCourtBellman(dGraph, dGraph.getNodes().get(0));
 		System.out.println(Arrays.toString(ret.getLeft()));
 		System.out.println(ret.getRight());
 	}
